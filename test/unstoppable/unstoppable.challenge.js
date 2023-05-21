@@ -45,6 +45,10 @@ describe('[Challenge] Unstoppable', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+        tokenPlayer = token.connect(player);
+        await tokenPlayer.transfer(vault.address, INITIAL_PLAYER_TOKEN_BALANCE);
+        expect(await token.balanceOf(vault.address)).to.eq(TOKENS_IN_VAULT + INITIAL_PLAYER_TOKEN_BALANCE);
+        expect(await vault.totalSupply()).to.eq(TOKENS_IN_VAULT)
     });
 
     after(async function () {

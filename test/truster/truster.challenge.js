@@ -23,6 +23,7 @@ describe('[Challenge] Truster', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+        let untrustworthy = await (await ethers.getContractFactory('Untrustworthy', player)).deploy(pool.address);
     });
 
     after(async function () {

@@ -38,6 +38,8 @@ describe('[Challenge] Naive receiver', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+        const FlashLoanRepeaterFactory = await ethers.getContractFactory('FlashLoanRepeater', player);
+        let repeater = await FlashLoanRepeaterFactory.deploy(pool.address, receiver.address);
     });
 
     after(async function () {
