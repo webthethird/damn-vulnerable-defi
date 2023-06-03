@@ -62,10 +62,6 @@ describe('[Challenge] Climber', function () {
             timelock.address, vault.address, token.address
         );
         await exploit.exploit();
-        expect(
-            await timelock.hasRole(ethers.utils.id("PROPOSER_ROLE"), exploit.address)
-        ).to.be.true;
-        expect(await timelock.delay()).to.eq(0);
     });
 
     after(async function () {
